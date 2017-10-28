@@ -1,0 +1,53 @@
+---
+layout: default
+---
+<center><b>
+<h1>ML Inside</h1>
+<!--
+
+<a href="https://github.com/vyraun" target="_blank"><i class="fa fa-github-square" style="font-size:24px"  title="GitHub"></i></a>
+<a href="https://twitter.com/vyraun" target="_blank"><i class="fa fa-twitter-square" style="font-size:24px"  title="Twitter"></i></a>
+<a href="https://in.linkedin.com/in/vraunak" target="_blank"><i class="fa fa-linkedin-square" style="font-size:24px"  title="LinkedIn"></i></a>
+<a href="">
+
+</a>
+
+-->
+
+<h5> A Blog about Deep Learning Techniques, Problems and Research </h5>
+</b>
+
+<style style="text/css">
+body {
+  background-image: url("https://s-media-cache-ak0.pinimg.com/originals/31/6c/99/316c994144415be5ebadf75be9eef5dc.jpg");
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+</style>
+
+</center><br>
+<section>
+	<ul>
+		{% for post in site.posts reversed %}
+
+		<li>
+			<div class="post-date">
+				<span>{{ post.date | date: "%b %d, %Y" }}</span>
+			</div>
+			<div class="title">
+				<a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+			</div>
+		</li>
+
+		{% endfor %}
+
+	</ul>
+</section>
+
+<br>
+<center>
+<a href="https://github.com/vyraun" target="_blank"><i class="fa fa-github-square" style="font-size:24px"  title="GitHub"></i></a>
+<a href="https://twitter.com/vyraun" target="_blank"><i class="fa fa-twitter-square" style="font-size:24px"  title="Twitter"></i></a>
+<a href="https://in.linkedin.com/in/vraunak" target="_blank"><i class="fa fa-linkedin-square" style="font-size:24px"  title="LinkedIn"></i></a>
+</center>
