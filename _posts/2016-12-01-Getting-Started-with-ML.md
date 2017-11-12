@@ -1,6 +1,6 @@
 ---
-title: Getting Started With ML
+title: On the Geometry of Word Embeddings
 updated: 2015-12-01 15:56
 ---
 
-> This post discusses a few things about how to think about solving problems with machine learning and introduces the relevant jargons. 
+> Real-valued, low dimensional word vectors have become the basic building blocks of several NLP tasks. This post explores some of the geometric properties of the embedding space.  
