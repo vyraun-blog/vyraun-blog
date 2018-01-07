@@ -1,0 +1,117 @@
+<blockquote>
+  <p>These are notes from the talk</p>
+</blockquote>
+
+<p>I attended the 2017 NIPS Conference held at Long Beach as a Microsoft employee (thanks Microsoft India for sending me!). And it was great attending the full conference: tutorials,  and the main conference with invited &amp; spotlight talks, workshops. The first day was dedicated to tutorials and this post is about the three tutorials I attended: Deep Learning Practice and Trends, Deep Probabilistic Modelling with Gaussian Processes and Geometric Deep learning on graphs and manifolds. But why write a blog post about it when you can just go back and watch the videos. Well, first reading is much faster than watching videos (300 bits/s vs 20 bits/s).</p>
+
+<p>I found the first tutorial by Oriol Vinyals and Scott Reed very well prepared. All the scattered knowledge that I had from following deep learning research for over an year became much more organised. As the title says, the talk was divided into two parts: Practice, which gave a nice high-level view of the Deep Learning toolbox and Trends, which explained 5 trends in deep learning research.</p>
+
+<p>Part 1: The deep learning toolbox</p>
+
+<p>Different neural net architectures need to have the right inductive biases. For CNNs, the key inductive biases are 1. Locality Invariance 2. Translation invariance which is realized in a Conv layer which is a locally connected layer with weight sharing.</p>
+
+<p>Revolution of depth, but training is a deep net is not easy, depth can’t be parallelized (unlike convolutions) and there are too many parameters for optimization. So how to build very deep CNNs? The tricks are:</p>
+
+<ul>
+  <li>SGD + Momentum</li>
+  <li>BatcnNorm after each weight layer (led to higher accuracy plus faster training in Inception v2 paper)</li>
+  <li>Weight Initialization (Glorot works well for VGG)</li>
+  <li>Model: Stack 3x3 convolutions</li>
+  <li>Model: ResNET: Add residual connections that skip 2-3 weight layers, these enabled training deeper nets. Idea is that the gradient skips a  few weight layers and does not vanish, so a better gradient flow is maintained. Another related archirecture is highway network and DenseNet (skip connections between everything and everything) and UNET architecture.</li>
+</ul>
+
+<p>Part 2 of Practice is Recurrence and Attention</p>
+
+<p>2 key ingredients that have brough DL into NLP are 1. Neural embeddings (key insight: vectorize contexts) and RNN language models, whoch outperformed other approaches to LMs.</p>
+
+<p>RNNs have persistent memory i.e. a state variable for arbitrarily large contexts. They are SOTA in terms of the log probabilities they achieve on the test set.</p>
+
+<p>Seq2Seq are an extension to RNNs, however they have the limitation that increasing sentence length causes a bottleneck which leads to a sharp drop in BLEU score. The idea in attention (Bahdanau paper, 2015) is that the decoder can query the encoder at every time step. It is really simple to implement and the softmax is differentiable. There are cool extensions to this model as well.</p>
+
+<p>Now the cool part of the talk was the Trends part:</p>
+
+<ol>
+  <li>Autoregressive models
+I idea is quite simple: P(x;theta) = ?., and each factor can be parametrized by theta, which can be shared. So, as long as the ordering and grouping is conistent (i.e. it doesn’t violate cusality). Each factor can be parametrized by a DNN (just like in DQNs, which learned to play Atari games). So, the key question is 1. how do you order and group the variables and how do you parametrize them? 
+Part 1: Modeling Raw Waveforms using Causal Convolutions
+Key thing is that each output depends only on the input from prior timesteps. And if you want to get more context for every prediction the tool is dilation. So, you have causal dilated convolutions. And of course, you can stack them, duh! But more tricks ae needed: If you have many many possible values the cross entropy loss has a large meory consumption. So they modeled the loss using a discretized mixture of logistic losses ( a mixture of sigmoids).
+Another question is? How do you speed up the sampling? To sample from these models you have to go from left to right which is an O(N) operation. But you can first distill a student net from a teacher net i.e. pretrain a wavenet teacher in the usual way and then train the student net (like GANs).
+Part 2: Modeling Text
+Self attention: the weights are adaptive and it has a more flexible architecture than convolutions. 
+Part 3: Modeling Images
+You can do it pixel by pixel or group by group. 
+So, to summarize AR models, we had 2 kinds of models:
+    <ol>
+      <li>Fully Sequential Models: You can factorize per sample or per pixel, his gives you fast scoring but O(N) sampling. You can make conditional independence assumptions, which enable O(N) scoring and faster sampling.</li>
+      <li>Distilled Models: Examples are Wavenet, Parallel NMT. They have O(N) scoring and O(1) sampling.</li>
+    </ol>
+  </li>
+</ol>
+
+<p>Part 2 of the Trend: Domain Alignment</p>
+
+<p>Scoot Reed said this was the most promising thing in unsupervised learning. And it absolutely is. And it is the method behind two of my favorite papers: Language Style Transfer and Unsupervised Word Translation. The idea behind this trend is also very simple and the problem is immensely practical. For example, recently I purchased Amazon Echo, powered by Alexa and since my room is not very large, I do not get really great sound out of it. My guess is that since the model behind Alexa was trained in a different acoustic environment?.? Read it. Another</p>
+
+<p>So lets see the problem formation:</p>
+
+<ul>
+  <li>Input: Input is a set of images with some shared structure but there exists no pairing between the images in one domain and the other (i.e. there is no direct alignment). For text, you could have a text corpora in different languages but you don’t have the matching sentences.</li>
+  <li>Architectures: They aren’t fancy but are cleverly hooked up.</li>
+  <li>Losses: are wired with a loss so that an alignment emerges between the two domains. So, the losses could be in the latent space (e.g. you want the latent representations to be indistinguishable) or in the raw observation space (e.g. pixel space). Adversarial objectives and max likelihood both work well.</li>
+  <li>Example 1: Visual Domain Aligment b/w SVHN and MNIST
+  So you could do the alignment in a weakly supervised way and then do cross-domain retrieval.</li>
+</ul>
+
+<p>Approach 2: Aversarial Learning
+  Here, you are aligning the domains by construction. So, you share the encoder over several domains, so that the features learnt are invariant to a domain. The gradient revrsal layer (https://discuss.pytorch.org/t/solved-reverse-gradients-in-backward-pass/3589) is also employed to do the trick. The paper is Domain-Adversarial training of Neural Nets.
+  And of course to make tthese works their are several other trciks that are in the individual papers. for example, the lnguage style trsnfer first uses? but then it uses a? to regularize further, which is the final model.
+  Examples:</p>
+<ol>
+  <li>Unsupervised cross domain Image generation</li>
+  <li>Cycle Consitstent Loss</li>
+  <li>Unsupervised Image to Image translation</li>
+  <li>DISCOGAN</li>
+  <li>GraspGAN
+    <ul>
+      <li>These were for images, No models for text:</li>
+      <li>
+        <ol>
+          <li>Unsupervised NMT</li>
+        </ol>
+      </li>
+    </ul>
+  </li>
+  <li>Unsupervised NMT using Monolingual Corpora only
+  Trend 3: Meta Learning
+  it is about a loss that models another loss. The idea is to go beyond a train and test paradigm. So, meta-learning adds a twist to the standard paradigm. The task between the training set and the test set changes, so the model has to learn to learn.
+    <ul>
+      <li>There are three approaches to meta-learning:</li>
+    </ul>
+  </li>
+  <li>Model Based</li>
+  <li>Metric Based</li>
+  <li>Optmization Based</li>
+</ol>
+
+<p>Trend 4: Deep Learning Over Graphs
+  graph is hard to represnt as a tensor. There are two main architectures: message passing (Borealis AI, who had the cool Yes, We GAN T-shirts had a paper on message passing), and CNNs, RNNS, attention. But again the question to ask is: What is the right inductive bias for  graphs. We want our model to be order invariant. So, X = permutation(X).</p>
+<ul>
+  <li>
+    <p>So, we have Message passing NNs, however with graphs batching will be quite tricky.</p>
+
+    <p>Trend 5: Program Induction with NNs
+So you have 3 ways:</p>
+    <ol>
+      <li>You can think of NN as a program: embed a program as weights of a NN.</li>
+      <li>NN that generates source code. (Learning to execute paper by Zaremba et al. Follows under the paradigm of “Apply Seq2Seq to everthing”, Deep Coder, RobustFill: shows that Neural program induction works).</li>
+      <li>Probabilistic Programming with NNs.
+To conclude the trends part: Deep AR models and CNNs are in production in consumer apps.
+Inductive biases are very useful: CNNs (spatial), RNNs (time) and Graphs (Perm. Invariance).
+Simple tricks like resnets &amp; skip-connections.
+Adversarial Nets + Unsupervised domain alignment.
+Meta-learning: more and more lifecycle of a model will be the part of the end to end training.
+Program synthesis and deep geometrci learning will become very important.</li>
+    </ol>
+  </li>
+</ul>
+
