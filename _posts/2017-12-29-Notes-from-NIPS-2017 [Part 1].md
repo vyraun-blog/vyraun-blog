@@ -57,7 +57,7 @@ So let's see the problem/model description:
 - Losses: are wired with a loss so that an alignment emerges between the two domains. So, the losses could be in the latent space (e.g. you want the latent representations to be indistinguishable) or in the raw observation space (e.g. pixel space). Adversarial objectives and max likelihood both work well.
 
 #### Approach 1: Weakly Supervised (e.g. Visual Domain Alignment b/w SVHN and MNIST)
-So you could do the alignment in a weakly supervised way: share layers with different modalities, train them for some downstream task and then neutrons with activations over the same semantic units occur! Then you can do cross-domain retrieval i.e. you can query the model and retrieve the images in other domains.
+So you could do the alignment in a weakly supervised way: share layers with different modalities, train them for some downstream task and then neurons with activations over the same semantic units occur! Then you can do cross-domain retrieval i.e. you can query the model and retrieve the images in other domains.
   
 #### Approach 2: Adversarial Learning
 Here, you are aligning the domains by construction. You can share the encoder over several domains, so that the features learnt are invariant to a domain. The paper Domain Adversarial Training of NNs explains it very well.
